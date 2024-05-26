@@ -15,6 +15,25 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+router.get('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (id) {
+      const user = await User.findOne({ _id: id });
+      console.log('user', user);
+      if (user) {
+        successHandle(res, user);
+      } else {
+        errorHandle(res, 'cannot find user');
+      }
+    } else {
+      errorHandle(res, 'user id is required');
+    }
+  } catch (error) {
+    errorHandle(res, 'get data error');
+  }
+});
+
 router.post('/', async (req, res, next) => {
   try {
     const { name, email } = req.body;
@@ -63,4 +82,14 @@ router.delete('/:id', async (req, res, next) => {
     errorHandle(res, 'delete data error');
   }
 });
+router.delete('/', async (req, res, next) => {
+  try {
+    const result = await User.deleteMany({});
+
+    successHandle(res, 'delete success');
+  } catch (error) {
+    errorHandle(res, 'delete data error');
+  }
+});
+
 module.exports = router;
