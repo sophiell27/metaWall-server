@@ -1,14 +1,25 @@
 const mongoose = require('mongoose');
 
+const { VALIDATE_ERROR_MESSAGE } = require('../validatorContants');
+
 const userSchema = new mongoose.Schema(
   {
-    name: {
+    username: {
       type: String,
-      required: [true, 'name is required'],
+      required: [true, VALIDATE_ERROR_MESSAGE.USERNAME_REQUIRE],
+      maxLength: {
+        value: 8,
+        message: VALIDATE_ERROR_MESSAGE.USERNAME_LENGTH,
+      },
+    },
+    password: {
+      type: String,
+      required: [true, VALIDATE_ERROR_MESSAGE.PASSWORD_REQUIRE],
+      select: false,
     },
     email: {
       type: String,
-      required: [true, 'email is required'],
+      required: [true, VALIDATE_ERROR_MESSAGE.EMAIL_INVALID],
       unique: true,
       lowercase: true,
     },
