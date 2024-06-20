@@ -3,11 +3,13 @@ const expres = require('express');
 const router = expres.Router();
 
 const Post = require('../models/postModel');
-const errorHandle = require('../queryHandle/errorHandle');
-const successHandle = require('../queryHandle/successHandle');
+const successHandle = require('../services/successHandle');
+const handleErrorAsync = require('../services/handleErrorAsync');
+const appError = require('../services/appError');
 
-router.get('/', async (req, res, next) => {
-  try {
+router.get(
+  '/',
+  handleErrorAsync(async (req, res, next) => {
     const { keyword, timeSort } = req.query;
     const filter = keyword ? { content: new RegExp(req.query.keyword) } : {};
     const order = timeSort === 'desc' ? '-createdAt' : 'createdAt';
@@ -18,23 +20,51 @@ router.get('/', async (req, res, next) => {
       })
       .sort(order);
     successHandle(res, posts);
-  } catch (error) {
-    errorHandle(res, 'get data error');
-  }
-});
+  }),
+);
 
-router.post('/', async (req, res, next) => {
-  try {
+router.post(
+  '/',
+  handleErrorAsync(async (req, res, next) => {
     const { user, content } = req.body;
     if (user && content) {
       const newPost = await Post.create(req.body);
       successHandle(res, newPost);
     } else {
-      errorHandle(res);
+      next(appError(400, 'data is required'));
     }
-  } catch (error) {
-    errorHandle(res);
-  }
-});
+  }),
+);
+
+router.patch(
+  '/:id',
+  handleErrorAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const { content, photo } = req.body;
+    if (id && (content || photo)) {
+      const updatedData = await Post.findByIdAndUpdate(id, req.body, {
+        new: true,
+      });
+      if (updatedData) {
+        successHandle(res, updatedData);
+      }
+    } else {
+      next(appError(400, 'data is invalid'));
+    }
+  }),
+);
+
+router.delete(
+  '/:id',
+  handleErrorAsync(async (req, res, next) => {
+    const { id } = req.params;
+    if (id) {
+      const result = await Post.findByIdAndDelete(id);
+      if (result) {
+        successHandle(200, 'The post has been deleted');
+      }
+    }
+  }),
+);
 
 module.exports = router;
