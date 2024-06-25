@@ -93,7 +93,8 @@ router.post(
   '/updatePassword',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
-    const { password, confirmPassword } = req.body;
+    console.log('updatePassword');
+    let { password, confirmPassword } = req.body;
     if (!password || !confirmPassword) {
       return next(appError(400, VALIDATE_ERROR_MESSAGE.FIELDS_MISSING));
     }
@@ -103,7 +104,7 @@ router.post(
     if (!validator.isLength(password, { min: 8 })) {
       return next(appError(400, VALIDATE_ERROR_MESSAGE.PASSWORD_LENGTH));
     }
-
+    password = await bcrypt.hash(req.body.password, 12);
     await User.findByIdAndUpdate(req.user.id, { password }, { new: true });
     res.status(200).json({
       status: 'success',
@@ -139,8 +140,9 @@ router.patch(
 router.post(
   '/upload',
   isAuth,
-  uploadMiddleWare,
+  // uploadMiddleWare,
   handleErrorAsync(async (req, res, next) => {
+    console.log('upload');
     const handleSuccess = async (imageUrl) => {
       const updatedData = await User.findByIdAndUpdate(
         req.user.id,
