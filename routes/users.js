@@ -126,8 +126,8 @@ router.patch(
   '/profile',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
-    const { username, gender, imageUrl } = req.body;
-    if (username || gender || imageUrl) {
+    const { username, gender } = req.body;
+    if (username || gender) {
       const updatedUser = await User.findByIdAndUpdate(req.user.id, req.body, {
         new: true,
       });
@@ -140,21 +140,27 @@ router.patch(
 router.post(
   '/upload',
   isAuth,
-  // uploadMiddleWare,
+  uploadMiddleWare,
   handleErrorAsync(async (req, res, next) => {
-    console.log('upload');
+    if (!req.files?.length) {
+      return next(appError(400, 'No file'));
+    }
     const handleSuccess = async (imageUrl) => {
       const updatedData = await User.findByIdAndUpdate(
         req.user.id,
         { imageUrl },
         { new: true },
       );
+
       if (!updatedData) {
         return next(appError(500, 'failed to update'));
       }
+      if (req.user.imageUrl) {
+        //TODO: delete the previous imageUrl
+      }
       successHandle(res, updatedData);
     };
-    handleImageUpload(req, `images/${req.user.id}/avatar`, handleSuccess);
+    handleImageUpload(req, `images/${req.user.id}/avatar/`, handleSuccess);
   }),
 );
 
