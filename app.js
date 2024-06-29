@@ -2,13 +2,12 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const connectDB = require('./services/connectDB');
-const admin = require('./services/firebase');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const postsRouter = require('./routes/posts');
+const postRouter = require('./routes/post');
 const uploadRouter = require('./routes/upload');
 const handleErrorAsync = require('./services/handleErrorAsync');
 
@@ -30,6 +29,7 @@ app.use(cors({ origin: '*' }));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
+app.use('/post', postRouter);
 app.use('/upload', uploadRouter);
 
 app.use((req, res, next) => {
@@ -39,6 +39,7 @@ app.use((req, res, next) => {
   });
 });
 app.use((err, req, res, next) => {
+  console.log('err', err);
   if (err.name === 'ValidationError') {
     return res.status(400).json({
       status: false,
