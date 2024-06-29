@@ -1,5 +1,5 @@
 const express = require('express');
-const firebaseAdmin = require('../services/firebase');
+const {admin} = require('../services/firebase');
 
 
 const { VALIDATE_ERROR_MESSAGE } = require('../constants/validate');
@@ -10,7 +10,7 @@ const handleErrorAsync = require('../services/handleErrorAsync');
 const uploadMiddleWare = require('../services/uploadMiddleWare');
 const successHandle = require('../services/successHandle');
 
-const bucket = firebaseAdmin.storage().bucket();
+const bucket = admin.storage().bucket();
 const router = express();
 
 router.post(

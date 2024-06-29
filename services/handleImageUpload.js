@@ -1,9 +1,14 @@
-const firebaseAdmin = require('./firebase');
-const bucket = firebaseAdmin.storage().bucket();
+const { admin } = require('./firebase');
+const bucket = admin.storage().bucket();
+const appError = require('../services/appError');
 
 const handleImageUpload = (req, filePath, handleSuccess) => {
     const file = req.files[0];
-    const blob = bucket.file(filePath);
+    if (!file) {
+        return appError(400, 'No file');
+    }
+
+    const blob = bucket.file(`${filePath}${req.files[0].originalname}`);
 
     const blobstream = blob.createWriteStream();
     blobstream.on('finish', () => {
