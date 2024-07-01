@@ -8,8 +8,7 @@ const router = expres.Router();
 router.get(
   '/user/:id',
   handleErrorAsync(async (req, res, next) => {
-    const { id } = req.params;
-    const posts = await Post.find({ user: id });
+    const posts = await Post.find({ user: req.params.id });
     successHandle(res, posts);
   }),
 );
