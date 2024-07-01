@@ -28,6 +28,8 @@ const userSchema = new mongoose.Schema(
       default: 3,
     },
     imageUrl: String,
+    followers: [{ user: { type: mongoose.Schema.ObjectId, ref: 'User' } }],
+    following: [{ user: { type: mongoose.Schema.ObjectId, ref: 'User' } }],
   },
   {
     versionKey: false,

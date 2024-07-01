@@ -163,4 +163,91 @@ router.post(
   }),
 );
 
+router.post(
+  '/:follow_id/follow',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    const { follow_id } = req.params;
+    const { id } = req.user;
+
+    if (!id || !follow_id) {
+      return next(appError(400, VALIDATE_ERROR_MESSAGE.USER_ID_REQUIRED));
+    }
+    if (id === follow_id) {
+      return next(appError(400, VALIDATE_ERROR_MESSAGE.FOLLOW_SELF));
+    }
+    const { modifiedCount: userModifiedCount } = await User.updateOne(
+      {
+        _id: id,
+        'following.user': {
+          $ne: follow_id,
+        },
+      },
+      {
+        $addToSet: {
+          following: {
+            user: follow_id,
+          },
+        },
+      },
+    );
+    const { modifiedCount } = await User.updateOne(
+      {
+        _id: follow_id,
+        'followers.user': {
+          $ne: id,
+        },
+      },
+      {
+        $addToSet: {
+          followers: {
+            user: id,
+          },
+        },
+      },
+    );
+    if (userModifiedCount && modifiedCount) {
+      return successHandle(res);
+    }
+    return next(appError(400, VALIDATE_ERROR_MESSAGE.FOLLOW_ALREADY));
+  }),
+);
+router.delete(
+  '/:follow_id/unfollow',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    const { follow_id } = req.params;
+    const { id } = req.user;
+    if (!id || !follow_id) {
+      return next(appError(400, VALIDATE_ERROR_MESSAGE.USER_ID_REQUIRED));
+    }
+    await User.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $pull: {
+          following: {
+            user: follow_id,
+          },
+        },
+      },
+    );
+    await User.updateOne(
+      {
+        _id: follow_id,
+      },
+      {
+        $pull: {
+          followers: {
+            user: id,
+          },
+        },
+      },
+    );
+
+    return successHandle(res);
+  }),
+);
+
 module.exports = router;

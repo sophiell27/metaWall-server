@@ -98,7 +98,7 @@ router.post(
       },
     );
     if (modifiedCount) {
-      return successHandle(res, { modifiedCount });
+      return successHandle(res);
     }
     return next(appError(400, VALIDATE_ERROR_MESSAGE.LIKED));
   }),
@@ -116,7 +116,7 @@ router.post(
       },
     );
     if (modifiedCount) {
-      return successHandle(res, { modifiedCount });
+      return successHandle(res);
     }
     return next(appError(400, VALIDATE_ERROR_MESSAGE.UNLIKED));
   }),

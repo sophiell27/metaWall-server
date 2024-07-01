@@ -6,9 +6,14 @@ const VALIDATE_ERROR_MESSAGE = {
   FIELDS_MISSING: 'All fields are required',
   //comment
   COMMENT_BLANK: 'Comment must not be blank',
+  DATA_INCORRECT: 'Data is incorrect',
   // email
   EMAIL_INVALID: 'email is invalid',
   REQUIRE_EMAIL: 'email is required',
+
+  // follow
+  FOLLOW_SELF: 'You cannot follow yourself',
+  FOLLOW_ALREADY: 'You have already followed the user',
   //gender
   GENDER_REQUIRE: 'gender is required',
   GENDER_TYPE_INCORRECT: 'gender should be male or female',
