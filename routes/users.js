@@ -252,6 +252,17 @@ router.delete(
 );
 
 router.get(
+  '/following',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    const result = await User.find({ _id: req.user.id }).select(
+      'following.user',
+    );
+    successHandle(res, result);
+  }),
+);
+
+router.get(
   '/getLikeList',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
