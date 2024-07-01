@@ -12,6 +12,7 @@ const postSchema = new mongoose.Schema(
       required: [true, 'content should not be empty'],
     },
     imageUrl: String,
+    likes: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
   },
   {
     versionKey: false,
@@ -26,7 +27,7 @@ const postSchema = new mongoose.Schema(
 );
 
 postSchema.virtual('comments', {
-  ref: 'Conmment',
+  ref: 'Comment',
   localField: '_id',
   foreignField: 'post',
 });

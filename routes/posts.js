@@ -46,7 +46,7 @@ router.get(
   }),
 );
 router.get(
-  '/:id',
+  '/:post_id',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
     const { id } = req.params;
@@ -73,15 +73,53 @@ router.post(
 );
 
 router.delete(
-  '/comment/:comment_id',
+  '/post_id/comment/:comment_id',
   handleErrorAsync(async (req, res, next) => {
     const { comment_id } = req.params;
 
     const result = await Comment.findByIdAndDelete(comment_id, { new: true });
     if (result) {
-      return successHandle(res, result, 200, 'comment had been deleted');
+      return successHandle(res, result);
     }
     return next(appError(400, 'unable to delete comment'));
+  }),
+);
+
+router.post(
+  '/:post_id/like',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    const { modifiedCount } = await Post.updateOne(
+      {
+        _id: req.params.post_id,
+        likes: { $ne: req.user._id },
+      },
+      {
+        $addToSet: { likes: req.user._id },
+      },
+    );
+    if (modifiedCount) {
+      return successHandle(res, { modifiedCount });
+    }
+    return next(appError(400, VALIDATE_ERROR_MESSAGE.LIKED));
+  }),
+);
+router.post(
+  '/:post_id/unlike',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    const { modifiedCount } = await Post.updateOne(
+      {
+        _id: req.params.post_id,
+      },
+      {
+        $pull: { likes: req.user._id },
+      },
+    );
+    if (modifiedCount) {
+      return successHandle(res, { modifiedCount });
+    }
+    return next(appError(400, VALIDATE_ERROR_MESSAGE.UNLIKED));
   }),
 );
 
