@@ -49,9 +49,7 @@ router.get(
   '/:post_id',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
-    const { id } = req.params;
-
-    const post = await Post.findById(id).populate({
+    const post = await Post.findById(req.params.id).populate({
       path: 'user',
       select: 'username imageUrl',
     });
@@ -74,10 +72,11 @@ router.post(
 
 router.delete(
   '/post_id/comment/:comment_id',
+  isAuth,
   handleErrorAsync(async (req, res, next) => {
-    const { comment_id } = req.params;
-
-    const result = await Comment.findByIdAndDelete(comment_id, { new: true });
+    const result = await Comment.findByIdAndDelete(req.params.comment_id, {
+      new: true,
+    });
     if (result) {
       return successHandle(res, result);
     }

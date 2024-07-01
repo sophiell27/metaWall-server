@@ -93,7 +93,6 @@ router.post(
   '/updatePassword',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
-    console.log('updatePassword');
     let { password, confirmPassword } = req.body;
     if (!password || !confirmPassword) {
       return next(appError(400, VALIDATE_ERROR_MESSAGE.FIELDS_MISSING));
