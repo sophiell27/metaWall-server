@@ -37,6 +37,10 @@ router.get(
         path: 'user',
         select: 'username imageUrl',
       })
+      .populate({
+        path: 'comments',
+        select: 'comment user',
+      })
       .sort(order);
     successHandle(res, posts);
   }),
