@@ -39,11 +39,6 @@ app.use((req, res, next) => {
   });
 });
 app.use((err, req, res, next) => {
-  console.log('err', err);
-  console.log('err', err.name);
-  console.log('err', err.message);
-  console.log('err', err.status);
-  console.log('err', err.statusCode);
   if (err.name === 'ValidationError') {
     return res.status(400).json({
       status: false,

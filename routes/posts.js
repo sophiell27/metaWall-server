@@ -103,7 +103,7 @@ router.post(
     return next(appError(400, VALIDATE_ERROR_MESSAGE.LIKED));
   }),
 );
-router.post(
+router.delete(
   '/:post_id/unlike',
   isAuth,
   handleErrorAsync(async (req, res, next) => {

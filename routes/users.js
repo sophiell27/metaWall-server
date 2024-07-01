@@ -4,6 +4,7 @@ var router = express.Router();
 const validator = require('validator');
 
 const User = require('../models/userModel');
+const Post = require('../models/postModel');
 const successHandle = require('../services/successHandle');
 const handleErrorAsync = require('../services/handleErrorAsync');
 const appError = require('../services/appError');
@@ -247,6 +248,22 @@ router.delete(
     );
 
     return successHandle(res);
+  }),
+);
+
+router.get(
+  '/getLikeList',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    console.log('req.user.id', req.user.id);
+    const data = await Post.find({
+      likes: {
+        $eq: req.user.id,
+      },
+    })
+      .select('_id')
+      .lean({ virtural: false });
+    successHandle(res, data);
   }),
 );
 
