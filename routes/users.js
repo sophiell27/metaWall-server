@@ -47,15 +47,22 @@ router.post(
     if (imageUrl && typeof imageUrl !== 'string') {
       return next(appError(400, 'invalid image path'));
     }
-    password = await bcrypt.hash(req.body.password, 12);
-    const newUser = await User.create({
-      username,
-      password,
-      email,
-      gender,
-      imageUrl,
-    });
-    sendGenerateJWT(201, newUser, res);
+    try {
+      password = await bcrypt.hash(req.body.password, 12);
+      const newUser = await User.create({
+        username,
+        password,
+        email,
+        gender,
+        imageUrl,
+      });
+      sendGenerateJWT(201, newUser, res);
+    } catch (error) {
+      if (error.code === 11000) {
+        return next(appError(400, VALIDATE_ERROR_MESSAGE.EMAIL_EXIST));
+      }
+      return next(appError(400, VALIDATE_ERROR_MESSAGE.SOMETHING_WENT_WRONG));
+    }
   }),
 );
 

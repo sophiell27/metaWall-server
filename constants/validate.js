@@ -10,6 +10,7 @@ const VALIDATE_ERROR_MESSAGE = {
   // email
   EMAIL_INVALID: 'email is invalid',
   REQUIRE_EMAIL: 'email is required',
+  EMAIL_EXIST: 'email already exists',
 
   // follow
   FOLLOW_SELF: 'You cannot follow yourself',
@@ -45,6 +46,8 @@ const VALIDATE_ERROR_MESSAGE = {
   //username
   USERNAME_LENGTH: 'username must not be longer than 8 characters',
   USERNAME_REQUIRE: 'username is required',
+
+  SOMETHING_WENT_WRONG: 'Something went wrong',
 };
 
 module.exports = { VALIDATE_ERROR_MESSAGE };
