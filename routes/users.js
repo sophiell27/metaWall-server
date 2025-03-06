@@ -129,6 +129,17 @@ router.get(
   }),
 );
 
+// getby id
+router.get(
+  '/:id',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    const { id } = req.params;
+    const user = await User.findById({ _id: id });
+    successHandle(res, user);
+  }),
+);
+
 router.patch(
   '/profile',
   isAuth,
