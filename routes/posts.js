@@ -45,6 +45,31 @@ router.get(
     successHandle(res, posts);
   }),
 );
+// get posts by user id
+router.get(
+  '/user/:user_id',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    const { user_id } = req.params;
+    const { keyword, timeSort } = req.query;
+    const filter = keyword ? { content: new RegExp(req.query.keyword) } : {};
+    const order = timeSort === 'desc' ? '-createdAt' : 'createdAt';
+    const posts = await Post.find({
+      user: user_id,
+      ...filter,
+    })
+      .populate({
+        path: 'user',
+        select: 'username imageUrl',
+      })
+      .populate({
+        path: 'comments',
+        select: 'comment user',
+      })
+      .sort(order);
+    successHandle(res, posts);
+  }),
+);
 router.get(
   '/:post_id',
   isAuth,

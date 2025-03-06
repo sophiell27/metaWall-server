@@ -129,7 +129,7 @@ router.get(
   }),
 );
 
-// getby id
+// get by id
 router.get(
   '/:id',
   isAuth,
