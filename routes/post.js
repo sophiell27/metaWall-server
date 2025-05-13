@@ -1,9 +1,8 @@
-const expres = require('express');
+const express = require('express');
 const handleErrorAsync = require('../services/handleErrorAsync');
 const Post = require('../models/postModel');
 const successHandle = require('../services/successHandle');
-
-const router = expres.Router();
+const router = express.Router();
 
 router.get(
   '/user/:id',
