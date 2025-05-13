@@ -12,6 +12,6 @@ const connectDB = () =>
   mongoose
     .connect(DB)
     .then(() => console.log('DB connected'))
-    .catch(() => console.log('DB connect failed'));
+    .catch((e) => console.log('DB connect failed', e));
 
 module.exports = connectDB;

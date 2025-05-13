@@ -82,6 +82,15 @@ router.get(
     successHandle(res, post);
   }),
 );
+router.delete(
+  '/:post_id',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    const result = await Post.findByIdAndDelete(req.params.post_id)
+    successHandle(res, result);
+  }),
+);
+
 
 router.post(
   '/:post_id/comment',
