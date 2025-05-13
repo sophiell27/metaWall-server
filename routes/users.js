@@ -83,17 +83,22 @@ router.post(
         appError(400, VALIDATE_ERROR_MESSAGE.SIGNIN_FIELDS_INCORRECT),
       );
     }
-    const user = await User.findOne({ email }).select('+password');
-    if (!user) {
-      return next(appError(400, VALIDATE_ERROR_MESSAGE.USER_NOT_EXIST));
+    try {
+      const user = await User.findOne({ email }).select('+password');
+      if (!user) {
+        return next(appError(400, VALIDATE_ERROR_MESSAGE.USER_NOT_EXIST));
+      }
+      const auth = await bcrypt.compare(password, user.password);
+      if (!auth) {
+        return next(
+          appError(400, VALIDATE_ERROR_MESSAGE.SIGNIN_FIELDS_INCORRECT),
+        );
+      }
+      sendGenerateJWT(200, user, res);
+    } catch (error) {
+      console.log('sigin error: ', error)
     }
-    const auth = await bcrypt.compare(password, user.password);
-    if (!auth) {
-      return next(
-        appError(400, VALIDATE_ERROR_MESSAGE.SIGNIN_FIELDS_INCORRECT),
-      );
-    }
-    sendGenerateJWT(200, user, res);
+   
   }),
 );
 
