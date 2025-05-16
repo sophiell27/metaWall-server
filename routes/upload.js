@@ -1,14 +1,14 @@
 const express = require('express');
-const {admin} = require('../services/firebase');
+const {admin} = require('../config/firebase');
 
 
 const { VALIDATE_ERROR_MESSAGE } = require('../constants/validate');
 const User = require('../models/userModel');
 const { isAuth } = require('../services/auth');
-const handleImageUpload = require('../services/handleImageUpload');
-const handleErrorAsync = require('../services/handleErrorAsync');
-const uploadMiddleWare = require('../services/uploadMiddleWare');
-const successHandle = require('../services/successHandle');
+const handleImageUpload = require('../utils/handleImageUpload');
+const handleErrorAsync = require('../middlewares/handleErrorAsync');
+const uploadMiddleWare = require('../middlewares/uploadMiddleWare');
+const successHandle = require('../utils/successHandle');
 
 const bucket = admin.storage().bucket();
 const router = express();

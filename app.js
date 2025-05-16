@@ -3,13 +3,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
-const connectDB = require('./services/connectDB');
+const connectDB = require('./config/connectDB');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const postsRouter = require('./routes/posts');
 const postRouter = require('./routes/post');
 const uploadRouter = require('./routes/upload');
-const handleErrorAsync = require('./services/handleErrorAsync');
+const handleErrorAsync = require('./middlewares/handleErrorAsync');
 
 connectDB();
 var app = express();

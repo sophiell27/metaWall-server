@@ -1,6 +1,6 @@
-const { admin } = require('./firebase');
+const { admin } = require('../config/firebase');
 const bucket = admin.storage().bucket();
-const appError = require('../services/appError');
+const appError = require('../middlewares/appError');
 
 const handleImageUpload = (req, filePath, handleSuccess) => {
     const file = req.files[0];

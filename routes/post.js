@@ -1,7 +1,7 @@
 const express = require('express');
-const handleErrorAsync = require('../services/handleErrorAsync');
+const handleErrorAsync = require('../middlewares/handleErrorAsync');
 const Post = require('../models/postModel');
-const successHandle = require('../services/successHandle');
+const successHandle = require('../utils/successHandle');
 const router = express.Router();
 
 router.get(

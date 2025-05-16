@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const handleErrorAsync = require('./handleErrorAsync');
-const appError = require('./appError');
+const handleErrorAsync = require('../middlewares/handleErrorAsync');
+const appError = require('../middlewares/appError');
 const User = require('../models/userModel');
 
 const sendGenerateJWT = (statusCode, user, res) => {

@@ -4,9 +4,9 @@ const router = expres.Router();
 
 const Post = require('../models/postModel');
 const Comment = require('../models/commentModel');
-const successHandle = require('../services/successHandle');
-const handleErrorAsync = require('../services/handleErrorAsync');
-const appError = require('../services/appError');
+const successHandle = require('../utils/successHandle');
+const handleErrorAsync = require('../middlewares/handleErrorAsync');
+const appError = require('../middlewares/appError');
 const { isAuth } = require('../services/auth');
 const { VALIDATE_ERROR_MESSAGE } = require('../constants/validate');
 

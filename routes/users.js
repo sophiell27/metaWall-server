@@ -5,13 +5,13 @@ const validator = require('validator');
 
 const User = require('../models/userModel');
 const Post = require('../models/postModel');
-const successHandle = require('../services/successHandle');
-const handleErrorAsync = require('../services/handleErrorAsync');
-const appError = require('../services/appError');
+const successHandle = require('../utils/successHandle');
+const handleErrorAsync = require('../middlewares/handleErrorAsync');
+const appError = require('../middlewares/appError');
 const { sendGenerateJWT, isAuth } = require('../services/auth');
 const { VALIDATE_ERROR_MESSAGE } = require('../constants/validate');
-const uploadMiddleWare = require('../services/uploadMiddleWare');
-const handleImageUpload = require('../services/handleImageUpload');
+const uploadMiddleWare = require('../middlewares/uploadMiddleWare');
+const handleImageUpload = require('../utils/handleImageUpload');
 
 //TODO: delete after test
 router.delete(
