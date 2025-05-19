@@ -4,11 +4,15 @@ const router = expres.Router();
 
 const Post = require('../models/postModel');
 const Comment = require('../models/commentModel');
+const PostLikeNotification = require('../models/postLikeNotificationModel')
 const successHandle = require('../utils/successHandle');
 const handleErrorAsync = require('../middlewares/handleErrorAsync');
 const appError = require('../middlewares/appError');
 const { isAuth } = require('../services/auth');
 const { VALIDATE_ERROR_MESSAGE } = require('../constants/validate');
+const User = require('../models/userModel');
+const { getOnlineUsers } = require('../utils/onlineUserManagement')
+
 
 router.post(
   '/',
@@ -122,16 +126,38 @@ router.post(
   '/:post_id/like',
   isAuth,
   handleErrorAsync(async (req, res, next) => {
+    const { post_id } = req.params;
+    const userId = req.user.id;
     const { modifiedCount } = await Post.updateOne(
       {
         _id: req.params.post_id,
-        likes: { $ne: req.user._id },
+        likes: { $ne: userId },
       },
       {
-        $addToSet: { likes: req.user._id },
+        $addToSet: { likes: userId },
       },
     );
     if (modifiedCount) {
+      const onlineUsers = getOnlineUsers()
+      const { user: recipient } = await Post.findById(post_id).populate({
+        path: 'user',
+        select: 'id',
+      })
+      const recipientSocketData = onlineUsers.find(user => user.userId === recipient.id)
+      const { username: senderName } = await User.findById(userId).select('username')
+      if (recipientSocketData && senderName) {
+        req.app.get("io").to(correspondUser.socketId).emit("like-post", {
+          postId: post_id,
+          senderName,
+          recipientId: recipient.id,
+        });
+      } else {
+        const notification = new PostLikeNotification({
+          postId: post_id,
+          senderId: userId,
+        })
+        await notification.save()
+      }
       return successHandle(res);
     }
     return next(appError(400, VALIDATE_ERROR_MESSAGE.LIKED));
