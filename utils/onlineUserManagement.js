@@ -23,4 +23,4 @@ const getOnlineUsers = () => {
     return onlineUsers;
 };
 
-module.exports = { addUser, removeUser, getOnlineUsers };
+module.exports = { addOnlineUser, removeOnlineUser, getOnlineUsers };
