@@ -1,24 +1,36 @@
 
-var { addOnlineUser, getOnlineUsers, removeOnlinelUser } = require('../utils/onlineUserManagement')
+const PostLikeNotification = require('../models/postLikeNotificationModel');
+var { addOnlineUser, getOnlineUsers, removeOnlineUser } = require('../utils/onlineUserManagement')
 
 const socketService = (io) => {
   console.log('io')
   io.on('connection', (socket) => {
     console.log('User connected: ' + socket.id);
 
-    socket.on('addUser', (userId) => {
-      console.log('addUser')
+    socket.on('addUser', async (userId) => {
       const users = getOnlineUsers()
-      if (!users.find(user => user.userId === userId)) {
+      if (!users.has(userId)) {
         addOnlineUser(userId, socket.id);
+        const unreadNotifications = await PostLikeNotification.find({ userId: userId, readStatus: false }).populate('senderId', 'username')
+        if(unreadNotifications) {
+          const structuredNotifications = unreadNotifications.map(({sender, postId, createdAt}) => ({
+            senderId: sender.id,
+            senderName: sender.username,
+            postId,
+            createdAt
+          }))
+          io.to(socket.id).emit('structuredNotifications', structuredNotifications)
+        }
       }
-      console.log('Added to Online Users');
+     
+  
     });
     const handleLikePost = ({ postId, recipientUserId, senderName }) => {
       const onlineUsers = getOnlineUsers()
-      const user = onlineUsers.find(user => user.userId === recipientUserId);
+      const user = onlineUsers.get(recipientUserId);
+      console.log('user' , user)
       if (user) {
-        io.to(useketId).emit('like-post', { postId, senderName });
+        io.to(user.socketId).emit('like-post', { postId, senderName });
       } else {
         console.log(`${recipientUserId} is offline — notification saved`);
       }
@@ -26,7 +38,7 @@ const socketService = (io) => {
     socket.on('like-post', handleLikePost);
 
     socket.on('disconnect', () => {
-      removeOnlinelUser(socket.id)
+      removeOnlineUser(socket.id)
       console.log('User disconnected:', socket.id);
       socket.off('yourEventName', handleLikePost);
     });

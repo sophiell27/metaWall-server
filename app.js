@@ -32,7 +32,7 @@ app.use('/posts', postsRouter);
 app.use('/post', postRouter);
 app.use('/upload', uploadRouter);
 
-app.use((req, res, next) => {
+app.use((_, res) => {
   res.status(404).json({
     status: 'false',
     message: '404 route not found',
@@ -69,5 +69,6 @@ process.on('unhandledRejection', (err, promise) => {
   console.log('err stack', err.stack);
   console.log('unhandledRejection', promise);
 });
+
 
 module.exports = app;

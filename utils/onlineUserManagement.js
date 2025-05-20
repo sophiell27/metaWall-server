@@ -5,18 +5,22 @@
 
 
 /* @typeof {onlineUsers} */
-let onlineUsers = [];
+let onlineUsers = new Map(); // key: userid, value: socketId
 
 const addOnlineUser = (userId, socketId) => {
-    if (!onlineUsers.find(user => user.userId === userId)) {
-        onlineUsers.push({ userId, socketId });
-        console.log("socket: added user")
+    if (!onlineUsers.has(userId)) {
+        onlineUsers.set(userId, socketId)
     }
 };
 
-const removeOnlineUser = (socketId) => {
-    onlineUsers = onlineUsers.filter(user => user.socketId !== socketId);
-    console.log("socket: removed user")
+const removeOnlineUser = (socket_Id) => {
+    for (let [userId, socketId] of onlineUsers.entries()) {
+        if (socketId === socket_Id) {
+            onlineUsers.delete(socket_Id)
+            console.log("socket: removed user")
+            break;
+        }
+    }
 };
 
 const getOnlineUsers = () => {

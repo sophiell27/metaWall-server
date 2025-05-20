@@ -151,13 +151,13 @@ router.post(
           senderName,
           recipientId: recipient.id,
         });
-      } else {
-        const notification = new PostLikeNotification({
-          postId: post_id,
-          senderId: userId,
-        })
-        await notification.save()
       }
+      const notification = new PostLikeNotification({
+        postId: post_id,
+        sender: userId,
+        userId: recipient.id
+      })
+      await notification.save()
       return successHandle(res);
     }
     return next(appError(400, VALIDATE_ERROR_MESSAGE.LIKED));

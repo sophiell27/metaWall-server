@@ -7,7 +7,7 @@ const Notification = require('./notificationModel')
 const postLikeNotificationSchema = new mongoose.Schema(
     {
         postId: { type: mongoose.Schema.ObjectId, require: true },
-        senderId: { type: mongoose.Schema.ObjectId, ref: 'User', require: true }
+        sender: { type: mongoose.Schema.ObjectId, ref: 'User', require: true }
     },
 );
 
