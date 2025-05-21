@@ -143,19 +143,21 @@ router.post(
         path: 'user',
         select: 'id',
       })
-      const recipientSocketData = onlineUsers.get(recipient.id)
+      const recipientSocketId = onlineUsers.get(recipient.id)
       const { username: senderName } = await User.findById(userId).select('username')
-      if (recipientSocketData && senderName) {
-        req.app.get("io").to(correspondUser.socketId).emit("like-post", {
+      let hasEmit = false;
+      if (recipientSocketId && senderName) {
+        hasEmit =  req.app.get("io").to(recipientSocketId).emit("like-post", {
           postId: post_id,
           senderName,
-          recipientId: recipient.id,
+          senderId: userId
         });
       }
       const notification = new PostLikeNotification({
         postId: post_id,
         sender: userId,
-        userId: recipient.id
+        userId: recipient.id,
+        readStatus: hasEmit
       })
       await notification.save()
       return successHandle(res);
