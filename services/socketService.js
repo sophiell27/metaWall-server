@@ -11,15 +11,15 @@ const socketService = (io) => {
       const users = getOnlineUsers()
       if (!users.has(userId)) {
         addOnlineUser(userId, socket.id);
-        const unreadNotifications = await PostLikeNotification.find({ userId: userId, readStatus: false }).populate('senderId', 'username')
+        const unreadNotifications = await PostLikeNotification.find({ userId: userId, readStatus: false }).populate('sender', 'username')
         if(unreadNotifications) {
           const structuredNotifications = unreadNotifications.map(({sender, postId, createdAt}) => ({
-            senderId: sender.id,
-            senderName: sender.username,
+            senderId: sender?.id,
+            senderName: sender?.username,
             postId,
             createdAt
           }))
-          io.to(socket.id).emit('structuredNotifications', structuredNotifications)
+          io.to(socket.id).emit('unreadNotifications', structuredNotifications)
         }
       }
      

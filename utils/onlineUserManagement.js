@@ -16,7 +16,7 @@ const addOnlineUser = (userId, socketId) => {
 const removeOnlineUser = (socket_Id) => {
     for (let [userId, socketId] of onlineUsers.entries()) {
         if (socketId === socket_Id) {
-            onlineUsers.delete(socket_Id)
+            onlineUsers.delete(userId)
             console.log("socket: removed user")
             break;
         }

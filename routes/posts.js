@@ -143,7 +143,7 @@ router.post(
         path: 'user',
         select: 'id',
       })
-      const recipientSocketData = onlineUsers.find(user => user.userId === recipient.id)
+      const recipientSocketData = onlineUsers.get(recipient.id)
       const { username: senderName } = await User.findById(userId).select('username')
       if (recipientSocketData && senderName) {
         req.app.get("io").to(correspondUser.socketId).emit("like-post", {
