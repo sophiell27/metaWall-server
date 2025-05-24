@@ -25,7 +25,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({ origin: '*' }));
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === 'development'
+        ? process.env.DEV_CLIENT_URL
+        : process.env.PROD_CLIENT_URL,
+  }),
+);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
@@ -69,6 +76,5 @@ process.on('unhandledRejection', (err, promise) => {
   console.log('err stack', err.stack);
   console.log('unhandledRejection', promise);
 });
-
 
 module.exports = app;
